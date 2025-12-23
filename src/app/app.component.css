@@ -1,0 +1,161 @@
+.app-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.app-header {
+  height: 70px;
+  min-height: 70px;
+  background: linear-gradient(90deg, #4A148C 0%, #880E4F 100%);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+  z-index: 1000;
+  position: relative;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.brand {
+  font-size: 20px;
+  font-weight: bold;
+  letter-spacing: 1px;
+}
+
+.toggle-btn {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 24px;
+  cursor: pointer;
+  padding: 5px;
+}
+
+.header-actions {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+}
+
+.lang-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: transparent;
+  border: 1px solid #ddd;
+  padding: 6px 12px;
+  border-radius: 20px;
+  cursor: pointer;
+  color: #f0eaea;
+  transition: all 0.2s;
+}
+
+.lang-btn:hover {
+  background: #7b0ed4;
+  border-color: #ccc;
+}
+
+.lang-text {
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.icon svg, .lang-btn svg {
+  vertical-align: middle;
+}
+
+.app-body {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+  position: relative;
+}
+
+.main-sidebar {
+  width: 250px;
+  background: #2c3e50;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  transition: width 0.3s ease;
+  flex-shrink: 0;
+  z-index: 900;
+}
+
+.main-sidebar.collapsed {
+  width: 60px;
+}
+
+.menu-list {
+  list-style: none;
+  padding: 0;
+  margin: 20px 0;
+  flex: 1;
+}
+
+.menu-list li {
+  padding: 15px 20px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  transition: background 0.2s;
+  color: #bdc3c7;
+}
+
+.menu-list li:hover, .menu-list li.active {
+  background: rgba(255,255,255,0.1);
+  color: white;
+  border-left: 4px solid #D81B60;
+}
+
+.icon { font-size: 20px; min-width: 24px; text-align: center; }
+.text { white-space: nowrap; overflow: hidden; }
+
+.profile-section {
+  padding: 15px;
+  border-top: 1px solid rgba(255,255,255,0.1);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+}
+.profile-section:hover { background: rgba(255,255,255,0.05); }
+
+.avatar { width: 36px; height: 36px; border-radius: 50%; object-fit: cover; border: 2px solid white; }
+.user-info { display: flex; flex-direction: column; white-space: nowrap; overflow: hidden; }
+.user-info .name { font-size: 14px; font-weight: 600; }
+.user-info .role { font-size: 11px; color: #bdc3c7; }
+
+.content-wrapper {
+  flex: 1;
+  background: #F3F4F6;
+  overflow: hidden;
+  position: relative;
+}
+
+.settings-popup {
+  position: absolute;
+  bottom: 70px;
+  left: 10px;
+  width: 200px;
+  background: white;
+  color: #333;
+  padding: 15px;
+  border-radius: 8px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+  z-index: 1100;
+}
+.color-palette { display: flex; gap: 8px; margin-top: 5px; }
+.color-dot { width: 20px; height: 20px; border-radius: 50%; cursor: pointer; border: 1px solid #ddd; }
+.btn-logout { width: 100%; margin-top: 10px; padding: 8px; background: #e74c3c; color: white; border: none; border-radius: 4px; cursor: pointer; }

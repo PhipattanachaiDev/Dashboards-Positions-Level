@@ -1,0 +1,216 @@
+<div class="org-container" cdkDropListGroup>
+
+  <div class="chart-area" #chartContainer (scroll)="drawLines()">
+
+    <svg class="svg-layer" [style.width.px]="svgWidth" [style.height.px]="svgHeight">
+      <defs>
+        <marker id="arrow-blue" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto">
+          <path d="M0,0 L0,10 L10,5 z" fill="#2196F3" />
+        </marker>
+        <marker id="arrow-red" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto">
+          <path d="M0,0 L0,10 L10,5 z" fill="#E91E63" />
+        </marker>
+        <marker id="arrow-green" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto">
+          <path d="M0,0 L0,10 L10,5 z" fill="#4CAF50" />
+        </marker>
+        <marker id="arrow-orange" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto">
+          <path d="M0,0 L0,10 L10,5 z" fill="#FF9800" />
+        </marker>
+        <marker id="arrow-purple" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto">
+          <path d="M0,0 L0,10 L10,5 z" fill="#9C27B0" />
+        </marker>
+      </defs>
+
+      <path *ngFor="let line of connectors" [attr.d]="line.d" class="connector {{ getColorClass(line.from) }}"
+        [attr.marker-end]="getMarkerUrl(line.from)" [class.active]="isHovered(line.from, line.to)">
+      </path>
+    </svg>
+
+    <div class="level-row" *ngFor="let level of levels; let i = index">
+      <span nz-icon nzType="close" nzTheme="outline" class="btn-delete-level" (click)="removeLevel(i)"
+        title="Delete Level">
+      </span>
+
+      <div class="level-label">{{ level.name }}</div>
+
+      <div class="drop-zone" cdkDropList [id]="'cdk-drop-list-' + i" [cdkDropListData]="level.items"
+        (cdkDropListDropped)="onDrop($event, i)">
+
+        <div class="org-card" *ngFor="let node of level.items" cdkDrag [id]="'node-' + node.id"
+          [ngClass]="getBorderClass(node.parentId)" (mouseenter)="setHighlight(node)"
+          (mouseleave)="highlightedIds.clear()">
+
+          <span nz-icon nzType="close" nzTheme="outline" class="btn-remove"
+                (click)="requestDelete(node, i)" title="Remove Node">
+          </span>
+
+          <div class="card-info">
+            <h4>{{ node.name }}</h4>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="footer-actions">
+      <button class="btn-add-level" (click)="addLevel()" title="Add New Level">
+        <span>+</span>
+      </button>
+
+      <button class="btn-save-all" (click)="save()">Save all</button>
+    </div>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-head">
+      <h3>Positions</h3>
+      <button class="btn-ghost" style="padding: 2px 8px; height: auto;" (click)="toggleModal('create')">+</button>
+    </div>
+
+    <div class="list-container" cdkDropList id="sidebar-list" [cdkDropListData]="poolPositions"
+      [cdkDropListConnectedTo]="dropListIds" (cdkDropListDropped)="onDropToSidebar($event)">
+
+      <div class="sidebar-item" *ngFor="let item of poolPositions; let k = index" cdkDrag>
+        <span>{{ item.name }}</span>
+
+        <span nz-icon nzType="close" nzTheme="outline" class="btn-delete-pool"
+              (click)="removePositionFromPool(k)" title="Delete">
+        </span>
+      </div>
+
+    </div>
+  </aside>
+
+</div>
+
+<div class="overlay" *ngIf="modals.create">
+  <div class="dialog create-modal">
+    <div class="dialog-header">
+      <h3>Create New Position</h3>
+      <span class="close-btn" (click)="toggleModal('create', false)">✕</span>
+    </div>
+    <div class="dialog-body">
+
+      <div class="form-group">
+        <label>Name <span class="req">*</span></label>
+        <input type="text" [(ngModel)]="tempNode.name" class="input-text" (keyup.enter)="createNode()">
+      </div>
+
+      <div class="form-group">
+        <label>Name (Thai)</label>
+        <input type="text" [(ngModel)]="tempNode.nameTh" class="input-text" (keyup.enter)="createNode()">
+      </div>
+
+      <div class="form-group">
+        <label>Name (Chinese)</label>
+        <input type="text" [(ngModel)]="tempNode.nameCh" class="input-text" (keyup.enter)="createNode()">
+      </div>
+
+      <div class="form-group">
+        <label>Name (Vietnamese)</label>
+        <input type="text" [(ngModel)]="tempNode.nameVi" class="input-text" (keyup.enter)="createNode()">
+      </div>
+
+      <div class="form-group">
+        <label>Section</label>
+        <div class="select-wrapper">
+          <select [(ngModel)]="tempNode.section" class="input-select">
+            <option value="">Select Section...</option>
+            <option value="IT">IT</option>
+            <option value="HR">HR</option>
+            <option value="Sales">Sales</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Salary Type <span class="req">*</span></label>
+        <div class="radio-group">
+          <label class="radio-label">
+            <input type="radio" name="salaryType" [(ngModel)]="tempNode.salaryType" value="Normal">
+            <span class="radio-custom"></span> Normal
+          </label>
+          <label class="radio-label">
+            <input type="radio" name="salaryType" [(ngModel)]="tempNode.salaryType" value="Commission">
+            <span class="radio-custom"></span> Commission
+          </label>
+        </div>
+      </div>
+    </div>
+    <div class="dialog-footer centered-footer">
+      <button class="btn btn-pill-outline" (click)="toggleModal('create', false)">Cancel</button>
+      <button class="btn btn-pill-filled" (click)="createNode()">+ Create</button>
+    </div>
+  </div>
+</div>
+
+<div class="overlay" *ngIf="modals.parent">
+  <div class="dialog">
+    <div class="dialog-header">
+      <h3>Select Parent for '{{ dragContext?.item?.name }}'</h3>
+      <span class="close-btn" (click)="closeParentModal()">✕</span>
+    </div>
+    <div class="dialog-body">
+      <p style="color:#666; font-size:13px; margin-top:0">Select a parent from Level {{ dragContext?.targetLevel! - 1 }}
+      </p>
+
+      <div style="max-height: 150px; overflow-y: auto;">
+        <div *ngFor="let p of dragContext?.potentialParents" class="parent-option"
+          [class.active]="dragContext?.selectedParentId === p.id" (click)="dragContext.selectedParentId = p.id">
+          <span>👤 {{ p.name }}</span>
+        </div>
+      </div>
+
+      <div style="margin-top: 15px; border-top: 1px solid #eee; padding-top: 10px;">
+        <label style="font-weight:600; font-size:13px;">Permissions</label>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top:5px;">
+          <label *ngFor="let perm of permissionsList" style="font-weight: normal; font-size: 13px;">
+            <input type="checkbox" [(ngModel)]="dragContext.perms[perm]"> {{ perm }}
+          </label>
+        </div>
+      </div>
+    </div>
+    <div class="dialog-footer centered-footer">
+      <button class="btn btn-pill-outline" (click)="closeParentModal()">Cancel</button>
+      <button class="btn btn-pill-filled" (click)="confirmDrop()">Confirm</button>
+    </div>
+  </div>
+</div>
+
+<div class="overlay" *ngIf="modals.delete">
+  <div class="dialog">
+    <div class="dialog-header">
+      <h3 style="color: var(--danger)">Delete Position</h3>
+    </div>
+    <div class="dialog-body">
+      <div style="display:flex; gap:15px;">
+        <div class="error-circle">!</div>
+        <div>
+          <p style="margin:0; font-weight:600">Delete {{ deleteContext?.node?.name }}?</p>
+          <p style="font-size:13px; color:#666; margin-top:5px;">
+            This will remove {{ deleteContext?.node?.name }}
+            <span *ngIf="deleteContext.count > 0">and <b>{{ deleteContext.count }} sub-positions</b></span>.
+            All items will return to the sidebar.
+          </p>
+        </div>
+      </div>
+    </div>
+    <div class="dialog-footer centered-footer">
+      <button class="btn btn-pill-outline" (click)="modals.delete = false">No, Keep it</button>
+      <button class="btn btn-danger" (click)="executeDelete()">Yes, Delete</button>
+    </div>
+  </div>
+</div>
+
+<div class="overlay" *ngIf="modals.error">
+  <div class="dialog" style="width: 350px; text-align: center;">
+    <div class="dialog-body">
+      <div class="error-circle">✕</div>
+      <h3>Error</h3>
+      <p>{{ errorMessage }}</p>
+    </div>
+    <div class="dialog-footer centered-footer">
+      <button class="btn btn-danger" (click)="modals.error = false">OK</button>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,589 @@
+:host {
+  --primary: #4A148C;
+  --accent: #E91E63;
+  --danger: #D32F2F;
+  --bg-color: #F5F6F8;
+  --card-bg: #FFFFFF;
+  font-family: 'Sarabun', sans-serif;
+  display: block;
+  height: 100%;
+}
+
+/* Layout & Containers */
+.org-container {
+  display: flex;
+  height: calc(100vh - 70px);
+  background-color: var(--bg-color);
+  overflow: hidden;
+  padding-top: 20px;
+}
+
+.chart-area {
+  flex: 1;
+  position: relative;
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 60px;
+}
+
+.level-row {
+  position: relative;
+  min-height: 180px;
+  margin: 0 20px 20px;
+  border: 1px dashed #e0e0e0;
+  border-radius: 8px;
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+}
+
+.level-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #999;
+  margin-bottom: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* --- Modal Specific Styles --- */
+.create-modal {
+  width: 500px;
+  border-radius: 12px;
+}
+
+.dialog-header {
+  padding: 20px 25px;
+  border-bottom: 1px solid #E0E0E0;
+}
+
+.dialog-header h3 {
+  font-size: 18px;
+  font-weight: 700;
+  color: #4A148C;
+}
+
+.close-btn {
+  color: #9E9E9E;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.dialog-body {
+  padding: 25px;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+.form-group label {
+  display: block;
+  font-size: 14px;
+  font-weight: 600;
+  color: #424242;
+  margin-bottom: 8px;
+}
+
+.req {
+  color: #F44336;
+  margin-left: 2px;
+}
+
+.input-text, .input-select {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #E0E0E0;
+  border-radius: 6px;
+  font-size: 14px;
+  color: #333;
+  transition: border-color 0.2s;
+  background: #fff;
+}
+
+.input-text:focus, .input-select:focus {
+  border-color: #E91E63;
+  outline: none;
+}
+
+/* Radio Buttons Custom Style */
+.radio-group {
+  display: flex;
+  gap: 30px;
+  margin-top: 5px;
+}
+
+.radio-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  color: #333;
+  font-weight: 500;
+}
+
+.radio-label input {
+  accent-color: #E91E63;
+  width: 18px;
+  height: 18px;
+  margin: 0;
+}
+
+/* Footer & Buttons */
+.centered-footer {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  padding: 20px;
+  border-top: 1px solid #E0E0E0;
+}
+
+.btn-pill-outline {
+  background: white;
+  border: 1px solid #FF4081;
+  color: #FF4081;
+  padding: 10px 40px;
+  border-radius: 50px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.btn-pill-outline:hover {
+  background: #FFF0F5;
+}
+
+.btn-pill-filled {
+  background: #FF4081;
+  border: none;
+  color: white;
+  padding: 10px 40px;
+  border-radius: 50px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(255, 64, 129, 0.3);
+}
+
+.btn-pill-filled:hover {
+  background: #F50057;
+}
+
+.drop-zone {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 40px;
+  min-height: 100px;
+}
+
+/* Node Card */
+.org-card {
+  background: var(--card-bg);
+  width: 220px;
+  padding: 12px 16px;
+  padding-right: 32px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  cursor: grab;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 3px solid #ccc;
+  transition: transform 0.2s, box-shadow 0.2s;
+  z-index: 10;
+}
+
+.org-card:active { cursor: grabbing; }
+
+.org-card:hover, .org-card.is-highlighted {
+  box-shadow: 0 8px 20px rgba(233, 30, 99, 0.15);
+  transform: translateY(-2px);
+  z-index: 20;
+}
+
+/* Dynamic Border Colors */
+.border-blue { border-bottom-color: #2196F3; }
+.border-red { border-bottom-color: #E91E63; }
+.border-green { border-bottom-color: #4CAF50; }
+.border-orange { border-bottom-color: #FF9800; }
+.border-purple { border-bottom-color: #9C27B0; }
+
+.card-info h4 {
+  margin: 0;
+  font-size: 15px;
+  color: #333;
+}
+
+.badge {
+  background-color: #7FB3D5;
+  color: white;
+  min-width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 13px;
+}
+
+.org-card:nth-child(even) .badge { background-color: #C39BD3; }
+
+.btn-remove {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  width: 24px;
+  height: 24px;
+  background: var(--primary);
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  cursor: pointer;
+  opacity: 0;
+  transform: scale(0.8);
+  transition: all 0.2s;
+}
+
+.org-card:hover .btn-remove {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.btn-remove:hover {
+  background: #fee2e2;
+  color: var(--danger);
+  transform: scale(1.1);
+ }
+
+/* SVG Connectors */
+.svg-layer {
+  position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+  pointer-events: none; z-index: 1;
+}
+
+.connector {
+  fill: none;
+  stroke-width: 2px;
+  transition: stroke-width 0.2s, filter 0.2s;
+}
+
+.line-blue { stroke: #2196F3; }
+.line-red { stroke: #E91E63; }
+.line-green { stroke: #4CAF50; }
+.line-orange { stroke: #FF9800; }
+.line-purple { stroke: #9C27B0; }
+
+.connector.active {
+  stroke-width: 3px;
+  stroke: var(--accent) !important;
+  filter: drop-shadow(0 0 4px rgba(233, 30, 99, 0.4));
+}
+
+/* Sidebar */
+.sidebar {
+  width: 260px;
+  background: white;
+  margin: 0 15px 15px 0;
+  border-radius: 12px;
+  box-shadow: -4px 0 12px rgba(0,0,0,0.03);
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebar-head {
+  padding: 15px;
+  border-bottom: 1px solid #eee;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.sidebar-head h3 { margin: 0; font-size: 16px; color: var(--primary); }
+
+.list-container {
+  padding: 10px;
+  overflow-y: auto;
+  flex: 1;
+}
+
+.sidebar-item {
+  background: #fff;
+  border: 1px solid #eee;
+  padding: 10px;
+  margin-bottom: 8px;
+  border-radius: 6px;
+  cursor: grab;
+  display: flex;
+  justify-content: space-between;
+}
+
+/* Modals & Dialogs */
+.overlay {
+  position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  backdrop-filter: blur(2px);
+}
+
+.dialog {
+  background: white;
+  width: 480px;
+  max-width: 90%;
+  border-radius: 16px;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+  overflow: hidden;
+  animation: popIn 0.2s ease-out;
+}
+
+@keyframes popIn {
+  from { transform: scale(0.95); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+.dialog-header {
+  padding: 15px 20px;
+  border-bottom: 1px solid #f0f0f0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.dialog-header h3 { margin: 0; font-size: 18px; color: var(--primary); }
+
+.dialog-body { padding: 20px; max-height: 60vh; overflow-y: auto; }
+
+.dialog-footer {
+  padding: 15px 20px;
+  background: #fafafa;
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+}
+
+/* Form Elements */
+.form-control { margin-bottom: 15px; }
+.form-control label { display: block; font-size: 13px; font-weight: 600; color: #555; margin-bottom: 5px; }
+.input-text, .input-select {
+  width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; font-size: 14px;
+  box-sizing: border-box;
+}
+.input-text:focus { border-color: var(--primary); outline: none; }
+
+.btn {
+  padding: 8px 30px; border-radius: 20px; border: none; font-weight: 600; cursor: pointer;
+  transition: opacity 0.2s;
+}
+.btn:hover { opacity: 0.9; }
+.btn-primary { background: var(--accent); color: white; box-shadow: 0 4px 10px rgba(233, 30, 99, 0.2); }
+.btn-danger { background: var(--danger); color: white; }
+.btn-outline { background: transparent; border: 1px solid var(--accent); color: var(--accent); }
+.btn-ghost { background: transparent; border: 1px solid #ccc; color: #666; }
+
+/* Parent Selection List */
+.parent-option {
+  padding: 10px; border: 1px solid #eee; margin-bottom: 5px; border-radius: 6px; cursor: pointer;
+  display: flex; align-items: center;
+}
+.parent-option:hover { background: #f9f9f9; }
+.parent-option.active { border-color: var(--primary); background: #F3E5F5; }
+
+/* --- Footer Actions (Save & Add Level) --- */
+.footer-actions {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 15px;
+  margin-top: 40px;
+  margin-bottom: 40px;
+}
+
+/* ปุ่มวงกลม + */
+.btn-add-level {
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  border: 1px solid #6A1B9A;
+  background: #fff;
+  color: #6A1B9A;
+  font-size: 24px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+.btn-add-level:hover {
+  background: #F3E5F5;
+  transform: scale(1.05);
+}
+
+/* ปุ่ม Save all */
+.btn-save-all {
+  background: #38006b;
+  color: white;
+  border: none;
+  padding: 12px 50px;
+  border-radius: 30px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+  transition: all 0.2s;
+}
+
+.btn-save-all:hover {
+  background: #2a0052;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 15px rgba(0,0,0,0.3);
+}
+
+/* Error State */
+.error-circle {
+  width: 50px; height: 50px; background: #FFEBEE; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--danger); font-size: 24px; margin: 0 auto 10px;
+}
+
+/* Responsive Design */
+
+@media screen and (max-width: 992px) {
+  .org-container {
+    flex-direction: column;
+    height: calc(100vh - 60px);
+    padding-top: 10px;
+  }
+
+  .chart-area {
+    width: 100%;
+    flex: 1;
+    border-bottom: 1px solid #ddd;
+    margin-bottom: 0;
+    padding-bottom: 20px;
+  }
+
+  /* 3. Sidebar (เปลี่ยนเป็นแผงด้านล่าง) */
+  .sidebar {
+    width: 100%;
+    height: 250px;
+    margin: 0;
+    border-radius: 20px 20px 0 0;
+    box-shadow: 0 -4px 10px rgba(0,0,0,0.05);
+    z-index: 100;
+  }
+
+  .sidebar-head h3 {
+    font-size: 14px;
+  }
+
+  /* จัดเรียง Item ใน Sidebar แนวนอนเพื่อให้ประหยัดที่ (Optional) */
+  .list-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-content: flex-start;
+  }
+
+  .sidebar-item {
+    width: auto;
+    min-width: 100px;
+    flex-grow: 1;
+    margin-bottom: 0;
+    font-size: 13px;
+  }
+
+  /* 4. ปรับขนาดการ์ดใน Chart เล็กลงนิดหน่อย */
+  .org-card {
+    width: 180px;
+    padding: 8px 12px;
+  }
+
+  .card-info h4 {
+    font-size: 13px;
+  }
+
+  .btn-remove {
+    opacity: 1;
+    transform: scale(1);
+    top: -5px;
+    right: -5px;
+  }
+
+  /* 5. ปรับปรุง Modal ให้ไม่ล้นจอ */
+  .dialog, .create-modal {
+    width: 90% !important;
+    max-width: 90% !important;
+    max-height: 85vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .dialog-body {
+    overflow-y: auto;
+  }
+
+  /* 6. ปรับปุ่ม Action ด้านล่าง */
+  .footer-actions {
+    margin-top: 20px;
+    margin-bottom: 20px;
+  }
+
+  .btn-save-all {
+    padding: 10px 30px;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .level-row {
+    min-height: 140px;
+    margin: 0 10px 10px;
+    padding: 10px;
+  }
+
+  .drop-zone {
+    gap: 15px;
+  }
+
+  .sidebar {
+    height: 200px;
+  }
+}
+
+.btn-delete-level {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  cursor: pointer;
+  font-size: 18px;
+  color: #cbd5e1;
+  transition: all 0.2s;
+  z-index: 10;
+}
+
+.btn-delete-level:hover {
+  color: #f25757;
+  transform: scale(1.2);
+}
+
+.btn-delete-pool {
+  font-size: 12px;
+  color: #999;
+}
+.btn-delete-pool:hover {
+  background: transparent;
+  color: #ff4d4f;
+}
+
+.btn-remove {
+  font-size: 12px;
+}
