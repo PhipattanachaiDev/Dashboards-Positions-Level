@@ -1,9 +1,11 @@
 /* --- Global Layout --- */
 .login-wrapper {
-  height: 100vh;
+  min-height: 100vh; /* Allows scrolling on small screens */
   display: flex;
   justify-content: center;
   align-items: center;
+  padding: 20px; /* Safe padding for mobile edges */
+  box-sizing: border-box;
   background: linear-gradient(135deg, #1e293b 0%, #4a148c 100%);
   font-family: 'Segoe UI', sans-serif;
 }
@@ -14,7 +16,7 @@
   padding: 40px;
   border-radius: 16px;
   width: 100%;
-  max-width: 360px;
+  max-width: 380px; /* Adjusted width for better fit */
   box-shadow: 0 10px 25px rgba(0,0,0,0.2);
   text-align: center;
   animation: slideUp 0.5s ease-out;
@@ -116,3 +118,18 @@ label {
 .footer-links { margin-top: 20px; font-size: 13px; }
 .footer-links a { color: #666; text-decoration: none; }
 .footer-links a:hover { color: #800040; text-decoration: underline; }
+
+/* --- Mobile Responsive --- */
+@media (max-width: 480px) {
+  .login-card {
+    padding: 25px 20px; /* Reduce padding on mobile */
+    max-width: 100%;
+  }
+
+  .logo-circle {
+    width: 50px; height: 50px;
+    font-size: 18px;
+  }
+
+  h2 { font-size: 20px; }
+}

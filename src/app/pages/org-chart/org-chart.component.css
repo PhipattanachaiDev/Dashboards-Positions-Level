@@ -62,6 +62,7 @@
   font-size: 18px;
   font-weight: 700;
   color: #4A148C;
+  margin: 0;
 }
 
 .close-btn {
@@ -100,6 +101,7 @@
   color: #333;
   transition: border-color 0.2s;
   background: #fff;
+  box-sizing: border-box;
 }
 
 .input-text:focus, .input-select:focus {
@@ -178,6 +180,16 @@
   min-height: 100px;
 }
 
+/* Custom Placeholder for Drag */
+.custom-placeholder {
+  background: #eee;
+  border: 2px dashed #ccc;
+  border-radius: 12px;
+  min-height: 80px;
+  min-width: 220px;
+  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
+
 /* Node Card */
 .org-card {
   background: var(--card-bg);
@@ -217,21 +229,6 @@
   color: #333;
 }
 
-.badge {
-  background-color: #7FB3D5;
-  color: white;
-  min-width: 36px;
-  height: 36px;
-  border-radius: 8px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 700;
-  font-size: 13px;
-}
-
-.org-card:nth-child(even) .badge { background-color: #C39BD3; }
-
 .btn-remove {
   position: absolute;
   top: 6px;
@@ -260,7 +257,7 @@
   background: #fee2e2;
   color: var(--danger);
   transform: scale(1.1);
- }
+}
 
 /* SVG Connectors */
 .svg-layer {
@@ -349,44 +346,6 @@
   to { transform: scale(1); opacity: 1; }
 }
 
-.dialog-header {
-  padding: 15px 20px;
-  border-bottom: 1px solid #f0f0f0;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-.dialog-header h3 { margin: 0; font-size: 18px; color: var(--primary); }
-
-.dialog-body { padding: 20px; max-height: 60vh; overflow-y: auto; }
-
-.dialog-footer {
-  padding: 15px 20px;
-  background: #fafafa;
-  display: flex;
-  justify-content: center;
-  gap: 15px;
-}
-
-/* Form Elements */
-.form-control { margin-bottom: 15px; }
-.form-control label { display: block; font-size: 13px; font-weight: 600; color: #555; margin-bottom: 5px; }
-.input-text, .input-select {
-  width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; font-size: 14px;
-  box-sizing: border-box;
-}
-.input-text:focus { border-color: var(--primary); outline: none; }
-
-.btn {
-  padding: 8px 30px; border-radius: 20px; border: none; font-weight: 600; cursor: pointer;
-  transition: opacity 0.2s;
-}
-.btn:hover { opacity: 0.9; }
-.btn-primary { background: var(--accent); color: white; box-shadow: 0 4px 10px rgba(233, 30, 99, 0.2); }
-.btn-danger { background: var(--danger); color: white; }
-.btn-outline { background: transparent; border: 1px solid var(--accent); color: var(--accent); }
-.btn-ghost { background: transparent; border: 1px solid #ccc; color: #666; }
-
 /* Parent Selection List */
 .parent-option {
   padding: 10px; border: 1px solid #eee; margin-bottom: 5px; border-radius: 6px; cursor: pointer;
@@ -395,7 +354,16 @@
 .parent-option:hover { background: #f9f9f9; }
 .parent-option.active { border-color: var(--primary); background: #F3E5F5; }
 
-/* --- Footer Actions (Save & Add Level) --- */
+/* Buttons Generic */
+.btn {
+  padding: 8px 30px; border-radius: 20px; border: none; font-weight: 600; cursor: pointer;
+  transition: opacity 0.2s;
+}
+.btn:hover { opacity: 0.9; }
+.btn-danger { background: var(--danger); color: white; }
+.btn-ghost { background: transparent; border: 1px solid #ccc; color: #666; cursor: pointer;}
+
+/* Footer Actions */
 .footer-actions {
   display: flex;
   justify-content: center;
@@ -405,7 +373,6 @@
   margin-bottom: 40px;
 }
 
-/* ปุ่มวงกลม + */
 .btn-add-level {
   width: 45px;
   height: 45px;
@@ -428,7 +395,6 @@
   transform: scale(1.05);
 }
 
-/* ปุ่ม Save all */
 .btn-save-all {
   background: #38006b;
   color: white;
@@ -448,7 +414,6 @@
   box-shadow: 0 6px 15px rgba(0,0,0,0.3);
 }
 
-/* Error State */
 .error-circle {
   width: 50px; height: 50px; background: #FFEBEE; border-radius: 50%;
   display: flex; align-items: center; justify-content: center;
@@ -456,7 +421,6 @@
 }
 
 /* Responsive Design */
-
 @media screen and (max-width: 992px) {
   .org-container {
     flex-direction: column;
@@ -472,13 +436,14 @@
     padding-bottom: 20px;
   }
 
-  /* 3. Sidebar (เปลี่ยนเป็นแผงด้านล่าง) */
+  /* Moves Sidebar to TOP on mobile for better UX */
   .sidebar {
+    order: -1;
     width: 100%;
-    height: 250px;
-    margin: 0;
-    border-radius: 20px 20px 0 0;
-    box-shadow: 0 -4px 10px rgba(0,0,0,0.05);
+    height: 180px;
+    margin: 0 0 10px 0;
+    border-radius: 0 0 20px 20px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
     z-index: 100;
   }
 
@@ -486,7 +451,6 @@
     font-size: 14px;
   }
 
-  /* จัดเรียง Item ใน Sidebar แนวนอนเพื่อให้ประหยัดที่ (Optional) */
   .list-container {
     display: flex;
     flex-wrap: wrap;
@@ -502,7 +466,6 @@
     font-size: 13px;
   }
 
-  /* 4. ปรับขนาดการ์ดใน Chart เล็กลงนิดหน่อย */
   .org-card {
     width: 180px;
     padding: 8px 12px;
@@ -519,7 +482,6 @@
     right: -5px;
   }
 
-  /* 5. ปรับปรุง Modal ให้ไม่ล้นจอ */
   .dialog, .create-modal {
     width: 90% !important;
     max-width: 90% !important;
@@ -532,58 +494,15 @@
     overflow-y: auto;
   }
 
-  /* 6. ปรับปุ่ม Action ด้านล่าง */
+  /* Adjusted footer actions for mobile */
   .footer-actions {
     margin-top: 20px;
     margin-bottom: 20px;
+    flex-direction: row;
   }
 
   .btn-save-all {
-    padding: 10px 30px;
+    width: auto;
+    padding: 12px 30px;
   }
-}
-
-@media screen and (max-width: 480px) {
-  .level-row {
-    min-height: 140px;
-    margin: 0 10px 10px;
-    padding: 10px;
-  }
-
-  .drop-zone {
-    gap: 15px;
-  }
-
-  .sidebar {
-    height: 200px;
-  }
-}
-
-.btn-delete-level {
-  position: absolute;
-  top: 15px;
-  right: 15px;
-  cursor: pointer;
-  font-size: 18px;
-  color: #cbd5e1;
-  transition: all 0.2s;
-  z-index: 10;
-}
-
-.btn-delete-level:hover {
-  color: #f25757;
-  transform: scale(1.2);
-}
-
-.btn-delete-pool {
-  font-size: 12px;
-  color: #999;
-}
-.btn-delete-pool:hover {
-  background: transparent;
-  color: #ff4d4f;
-}
-
-.btn-remove {
-  font-size: 12px;
 }

@@ -30,17 +30,29 @@ export class LoginComponent {
     this.isLoading = true;
     this.errorMessage = '';
 
-    console.log('Remember Me:', this.rememberMe);
+    // 2. Validate Credentials (Hardcoded check)
+    // Check if user is 'admin' and password is '12345'
+    if (this.username === 'admin' && this.password === '12345') {
 
-    // 2. Auth Service Call
-    this.auth.login({ u: this.username, p: this.password }).subscribe({
-      next: () => {
-        this.router.navigate(['/org-chart']);
-      },
-      error: () => {
+      // If correct, call the service to set the session
+      this.auth.login({ u: this.username, p: this.password }).subscribe({
+        next: () => {
+          // Success: Go to Org Chart
+          this.router.navigate(['/org-chart']);
+        },
+        error: () => {
+          this.isLoading = false;
+          this.errorMessage = 'Login system error';
+        }
+      });
+
+    } else {
+      // If incorrect, stop loading and show error
+      // Use setTimeout to simulate a small network delay (optional, looks better)
+      setTimeout(() => {
         this.isLoading = false;
-        this.errorMessage = 'Invalid credentials';
-      }
-    });
+        this.errorMessage = 'The username or password is incorrect';
+      }, 500);
+    }
   }
 }
