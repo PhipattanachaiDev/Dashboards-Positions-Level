@@ -1,0 +1,52 @@
+<div class="login-wrapper">
+  <div class="login-card">
+
+    <div class="brand-header">
+      <div class="logo-circle">
+        <span>HR</span>
+      </div>
+      <h2>Welcome Back</h2>
+      <p class="subtitle">Please sign in to continue</p>
+    </div>
+
+    <div class="form-group">
+      <label>Username</label>
+      <input
+        [(ngModel)]="username"
+        (keyup.enter)="login()"
+        placeholder="admin"
+        class="input-field">
+    </div>
+
+    <div class="form-group">
+      <label>Password</label>
+      <input
+        [(ngModel)]="password"
+        type="password"
+        (keyup.enter)="login()"
+        placeholder="••••••"
+        class="input-field">
+    </div>
+
+    <div class="form-options">
+      <label class="remember-me">
+        <input type="checkbox" [(ngModel)]="rememberMe">
+        <span>Remember me</span>
+      </label>
+    </div>
+
+    <div *ngIf="errorMessage" class="error-msg">
+      {{ errorMessage }}
+    </div>
+
+    <button (click)="login()" [disabled]="isLoading" class="btn-primary">
+      <span *ngIf="!isLoading">Sign In</span>
+      <span *ngIf="isLoading">Loading...</span>
+    </button>
+
+    <div class="footer-links">
+      <a href="#">Forgot Password?</a>
+    </div>
+
+  </div>
+</div>

@@ -1,9 +1,11 @@
 import { Component, ElementRef, ViewChild, AfterViewInit, ChangeDetectorRef, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 import { CdkDragDrop, moveItemInArray, transferArrayItem, DragDropModule } from '@angular/cdk/drag-drop';
 import { Level, PositionItem } from '../../models/org-data.model';
 import { NzIconModule } from 'ng-zorro-antd/icon';
+import { DataService } from '../../services/data.services';
 
 interface Connector {
   d: string;
@@ -21,7 +23,7 @@ interface Connector {
 export class OrgChartComponent implements AfterViewInit {
   @ViewChild('chartContainer') chartRef!: ElementRef;
 
-  // Data & State
+  // Data initialization
   levels: Level[] = Array.from({ length: 5 }, (_, i) => ({ id: i + 1, name: `Level ${i + 1}`, items: [] }));
 
   poolPositions: PositionItem[] = [
@@ -31,6 +33,7 @@ export class OrgChartComponent implements AfterViewInit {
     { id: 'p4', name: 'Manager' }
   ];
 
+  // SVG & Visual settings
   connectors: Connector[] = [];
   svgWidth = 0;
   svgHeight = 0;
@@ -39,6 +42,7 @@ export class OrgChartComponent implements AfterViewInit {
   colors = ['blue', 'red', 'green', 'orange', 'purple'];
   highlightedIds = new Set<string>();
 
+  // State for Modals and temporary data
   modals = { create: false, parent: false, delete: false, error: false };
   errorMessage = '';
 
@@ -48,16 +52,23 @@ export class OrgChartComponent implements AfterViewInit {
   dragContext: any = null;
   deleteContext: any = null;
 
-  constructor(private cdr: ChangeDetectorRef) { }
+  constructor(
+    private cdr: ChangeDetectorRef,
+    private router: Router,
+    private dataService: DataService
+  ) { }
 
   ngAfterViewInit() {
+    // Draw lines once the view is rendered
     setTimeout(() => this.drawLines(), 100);
   }
 
   @HostListener('window:resize')
   onResize() {
-    this.drawLines();
+    this.drawLines(); // Redraw on window resize
   }
+
+  // --- Helpers & List Management ---
 
   get dropListIds(): string[] {
     return ['sidebar-list', ...this.levels.map((_, i) => `cdk-drop-list-${i}`)];
@@ -77,9 +88,7 @@ export class OrgChartComponent implements AfterViewInit {
     }
 
     this.levels.splice(index, 1);
-
     this.updateLevelNames();
-
     setTimeout(() => this.drawLines(), 50);
   }
 
@@ -89,7 +98,10 @@ export class OrgChartComponent implements AfterViewInit {
     });
   }
 
+  // --- Chart Logic (Sorting & Drawing) ---
+
   sortNodesByParent() {
+    // Reorder nodes so they sit closer to their parents visually
     for (let i = 1; i < this.levels.length; i++) {
       const currentLevel = this.levels[i];
       const parentLevel = this.levels[i - 1];
@@ -100,16 +112,12 @@ export class OrgChartComponent implements AfterViewInit {
       });
 
       currentLevel.items.sort((a, b) => {
-
         const pIdA = a.parentId || '';
         const pIdB = b.parentId || '';
         const indexA = parentOrder.get(pIdA) ?? 9999;
         const indexB = parentOrder.get(pIdB) ?? 9999;
 
-        if (indexA === indexB) {
-          return 0;
-        }
-
+        if (indexA === indexB) return 0;
         return indexA - indexB;
       });
     }
@@ -117,11 +125,11 @@ export class OrgChartComponent implements AfterViewInit {
 
   drawLines() {
     this.sortNodesByParent();
-
     this.cdr.detectChanges();
 
     if (!this.chartRef) return;
 
+    // Calculate SVG coordinates based on DOM positions
     const containerEl = this.chartRef.nativeElement;
     const containerRect = containerEl.getBoundingClientRect();
 
@@ -130,6 +138,7 @@ export class OrgChartComponent implements AfterViewInit {
 
     const newLines: any[] = [];
 
+    // Assign colors
     this.colorMap = {};
     let colorIdx = 0;
     this.levels.forEach(lvl => {
@@ -140,6 +149,7 @@ export class OrgChartComponent implements AfterViewInit {
       });
     });
 
+    // Generate Path (d) for each connection
     this.levels.forEach((lvl, lvlIndex) => {
       lvl.items.forEach(child => {
         if (!child.parentId) return;
@@ -161,6 +171,7 @@ export class OrgChartComponent implements AfterViewInit {
             y: cRect.top - containerRect.top + containerEl.scrollTop
           };
 
+          // Curve logic calculation...
           const prevLevel = this.levels[lvlIndex - 1];
           let parentIndex = 0;
           let totalParents = 1;
@@ -184,15 +195,10 @@ export class OrgChartComponent implements AfterViewInit {
             d = `M ${start.x},${start.y} V ${end.y}`;
           } else {
             d += `M ${start.x},${start.y} V ${midY - r}`;
-
             const dir = start.x < end.x ? 1 : -1;
-
             d += ` Q ${start.x},${midY} ${start.x + (r * dir)},${midY}`;
-
             d += ` H ${end.x - (r * dir)}`;
-
             d += ` Q ${end.x},${midY} ${end.x},${midY + r}`;
-
             d += ` V ${end.y}`;
           }
 
@@ -210,6 +216,7 @@ export class OrgChartComponent implements AfterViewInit {
     this.cdr.detectChanges();
   }
 
+  // --- Drag & Drop Handlers ---
 
   onDrop(event: CdkDragDrop<PositionItem[]>, levelIndex: number) {
     if (event.previousContainer === event.container) {
@@ -220,13 +227,12 @@ export class OrgChartComponent implements AfterViewInit {
 
     const item = event.previousContainer.data[event.previousIndex];
 
-    // Case 1: Drop to Level 1 (Root) -> No Parent needed
+    // Level 1 needs no parent
     if (levelIndex === 0) {
       this.transferNode(event, undefined, []);
       return;
     }
 
-    // Case 2: Drop to Level > 1 -> Check Parent availability
     const prevLevel = this.levels[levelIndex - 1];
 
     if (prevLevel.items.length === 0) {
@@ -235,7 +241,7 @@ export class OrgChartComponent implements AfterViewInit {
       return;
     }
 
-    // Open Parent Selection Modal
+    // Prepare context for Parent Selection Modal
     this.dragContext = {
       event,
       item,
@@ -251,7 +257,6 @@ export class OrgChartComponent implements AfterViewInit {
     if (!this.dragContext) return;
 
     const { event, selectedParentId, perms } = this.dragContext;
-    // Filter true values
     const activePerms = Object.keys(perms).filter(k => perms[k]);
 
     this.transferNode(event, selectedParentId, activePerms);
@@ -274,11 +279,11 @@ export class OrgChartComponent implements AfterViewInit {
   }
 
   onDropToSidebar(event: CdkDragDrop<PositionItem[]>) {
+    // Return item to sidebar pool
     if (event.previousContainer === event.container) {
       moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
     } else {
       transferArrayItem(event.previousContainer.data, event.container.data, event.previousIndex, event.currentIndex);
-      // Reset Node State
       const item = event.container.data[event.currentIndex];
       delete item.parentId;
       delete item.permissions;
@@ -286,6 +291,7 @@ export class OrgChartComponent implements AfterViewInit {
     this.drawLines();
   }
 
+  // --- Modals & CRUD ---
 
   toggleModal(type: 'create' | 'parent', state = true) {
     if (type === 'create') {
@@ -306,7 +312,7 @@ export class OrgChartComponent implements AfterViewInit {
       id: `new_${Date.now()}`,
       name: this.tempNode.name,
       nameTh: this.tempNode.nameTh,
-      nameZh: this.tempNode.nameCh, // ใช้ nameCh จาก Temp
+      nameZh: this.tempNode.nameCh,
       nameVi: this.tempNode.nameVi,
       section: this.tempNode.section,
       salaryType: this.tempNode.salaryType || 'Normal'
@@ -332,12 +338,11 @@ export class OrgChartComponent implements AfterViewInit {
 
     const { node, levelIdx, descendants } = this.deleteContext;
 
-    // 1. Remove main node
+    // Delete node and its descendants recursively
     const lvl = this.levels[levelIdx];
     lvl.items = lvl.items.filter(n => n.id !== node.id);
     this.resetAndPushToPool(node);
 
-    // 2. Remove descendants
     descendants.forEach((d: PositionItem) => {
       this.levels.forEach(l => {
         l.items = l.items.filter(i => i.id !== d.id);
@@ -366,6 +371,8 @@ export class OrgChartComponent implements AfterViewInit {
     });
     return list;
   }
+
+  // --- Visual Helpers (Styling) ---
 
   getBorderClass(parentId?: string) {
     return parentId && this.colorMap[parentId] ? `border-${this.colorMap[parentId]}` : '';
@@ -411,7 +418,35 @@ export class OrgChartComponent implements AfterViewInit {
     }, 100);
   }
 
-  save() {
-    console.log('Structure Saved:', this.levels);
+  saveAll() {
+    const allNodes: any[] = [];
+    const containerEl = this.chartRef?.nativeElement;
+
+    if (containerEl) {
+      const containerRect = containerEl.getBoundingClientRect();
+
+      // Save logic: Calculate absolute positions
+      this.levels.forEach(lvl => {
+        lvl.items.forEach(node => {
+          const nodeEl = document.getElementById(`node-${node.id}`);
+          let x = 0;
+          let y = 0;
+
+          if (nodeEl) {
+            const rect = nodeEl.getBoundingClientRect();
+            x = rect.left - containerRect.left + containerEl.scrollLeft;
+            y = rect.top - containerRect.top + containerEl.scrollTop;
+          }
+
+          allNodes.push({ ...node, x, y });
+        });
+      });
+    }
+
+    this.dataService.changeData(
+      'Saved Organization Chart',
+      `Saved structure with ${allNodes.length} positions.`,
+      { nodes: allNodes, connections: this.connectors }
+    );
   }
 }

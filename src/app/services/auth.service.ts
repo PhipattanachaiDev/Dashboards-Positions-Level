@@ -19,7 +19,7 @@ export class AuthService {
   constructor(private http: HttpClient, private router: Router) { }
 
   login(credentials: any): Observable<any> {
-    // Mock Login (ของจริงยิง this.http.post)
+    // Mock Login 
     return of({ accessToken: 'fake-jwt-token', refreshToken: 'fake-refresh-token' }).pipe(
       delay(800),
       tap(tokens => {

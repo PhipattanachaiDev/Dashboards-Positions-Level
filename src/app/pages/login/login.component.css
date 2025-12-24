@@ -1,0 +1,118 @@
+/* --- Global Layout --- */
+.login-wrapper {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(135deg, #1e293b 0%, #4a148c 100%);
+  font-family: 'Segoe UI', sans-serif;
+}
+
+/* --- Card Container --- */
+.login-card {
+  background: white;
+  padding: 40px;
+  border-radius: 16px;
+  width: 100%;
+  max-width: 360px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+  text-align: center;
+  animation: slideUp 0.5s ease-out;
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* --- Header Section --- */
+.brand-header { margin-bottom: 30px; }
+
+.logo-circle {
+  width: 60px; height: 60px;
+  background: #800040;
+  color: white;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 15px;
+  font-weight: bold; font-size: 20px;
+  box-shadow: 0 4px 10px rgba(128, 0, 64, 0.3);
+}
+
+h2 { margin: 0; color: #333; font-size: 24px; }
+.subtitle { margin: 5px 0 0; color: #666; font-size: 14px; }
+
+/* --- Form Elements --- */
+.form-group { text-align: left; margin-bottom: 15px; }
+
+label {
+  display: block;
+  font-size: 13px; font-weight: 600;
+  color: #4b5563; margin-bottom: 6px;
+}
+
+.input-field {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  box-sizing: border-box;
+  font-size: 14px;
+  transition: all 0.2s;
+  outline: none;
+  background: #f8fafc;
+}
+
+.input-field:focus {
+  border-color: #800040;
+  background: #fff;
+  box-shadow: 0 0 0 3px rgba(128, 0, 64, 0.1);
+}
+
+/* --- Form Options (Remember Me) --- */
+.form-options {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.remember-me {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: #4b5563;
+  cursor: pointer;
+}
+
+.remember-me input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+  accent-color: #800040;
+}
+
+/* --- Buttons --- */
+.btn-primary {
+  width: 100%;
+  padding: 12px;
+  background: #800040;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 15px; font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.1s;
+  margin-top: 0;
+}
+
+.btn-primary:hover { background: #600030; }
+.btn-primary:active { transform: scale(0.98); }
+.btn-primary:disabled { background: #ccc; cursor: not-allowed; }
+
+/* --- Messages & Links --- */
+.error-msg { color: #dc2626; font-size: 13px; margin-bottom: 10px; }
+
+.footer-links { margin-top: 20px; font-size: 13px; }
+.footer-links a { color: #666; text-decoration: none; }
+.footer-links a:hover { color: #800040; text-decoration: underline; }

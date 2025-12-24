@@ -4,64 +4,90 @@
 
 <div class="app-container" *ngIf="isLoggedIn">
 
-  <header class="app-header">
-    <div class="header-left">
-      <button class="toggle-btn" (click)="toggleSidebar()">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <line x1="3" y1="12" x2="21" y2="12"></line>
-          <line x1="3" y1="6" x2="21" y2="6"></line>
-          <line x1="3" y1="18" x2="21" y2="18"></line>
-        </svg>
-      </button>
+  <aside class="main-sidebar" [class.collapsed]="isSidebarCollapsed">
+
+    <div class="sidebar-header">
+      <div class="brand-logo" *ngIf="!isSidebarCollapsed">
+        Dashboards
+      </div>
     </div>
 
-    <div class="header-actions">
-      <button class="lang-btn" (click)="toggleLanguage()" title="Change Language">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <circle cx="12" cy="12" r="10"></circle>
-          <line x1="2" y1="12" x2="22" y2="12"></line>
-          <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
-        </svg>
-        <span class="lang-text">{{ currentLang || 'EN' }}</span>
-      </button>
+    <ul class="menu-list">
+      <li routerLink="/org-chart" routerLinkActive="active" title="Organization Chart">
+        <span class="icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <rect x="10" y="3" width="4" height="4"></rect>
+            <rect x="3" y="17" width="4" height="4"></rect>
+            <rect x="17" y="17" width="4" height="4"></rect>
+            <path d="M12 7v5l-7 0v5"></path>
+            <path d="M12 12l7 0v5"></path>
+          </svg>
+        </span>
+        <span class="text">Organization</span>
+      </li>
+
+      <!-- <li routerLink="/dashboard" routerLinkActive="active" title="Dashboards">
+        <span class="icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect>
+          </svg>
+        </span>
+        <span class="text">Dashboards</span>
+      </li> -->
+    </ul>
+
+    <div class="profile-section" (click)="showProfileMenu = !showProfileMenu">
+      <img [src]="user?.avatar || 'assets/default-avatar.png'" class="avatar">
+      <div class="user-info">
+        <div class="name">{{ user?.name || 'User' }}</div>
+        <div class="role">{{ user?.role || 'Admin' }}</div>
+      </div>
     </div>
-  </header>
 
-  <div class="app-body">
+    <div class="settings-popup" *ngIf="showProfileMenu">
+      <div class="popup-header">Settings</div>
+      <p>Theme Color:</p>
+      <div class="color-palette">
+        <div *ngFor="let c of themeColors" [style.background]="c" (click)="changeBackground(c)" class="color-dot"></div>
+      </div>
+      <hr>
+      <button (click)="logout()" class="btn-logout">Sign Out</button>
+    </div>
+  </aside>
 
-    <aside class="main-sidebar" [class.collapsed]="isSidebarCollapsed">
-      <ul class="menu-list">
-        <li routerLink="/dashboard" routerLinkActive="active" title="Organization Chart">
-          <span class="icon">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <rect x="10" y="3" width="4" height="4"></rect> <rect x="3" y="17" width="4" height="4"></rect> <rect x="17" y="17" width="4" height="4"></rect> <path d="M12 7v5l-7 0v5"></path> <path d="M12 12l7 0v5"></path> </svg>
-          </span>
-          <span class="text" *ngIf="!isSidebarCollapsed">Organization</span>
-        </li>
-      </ul>
 
-      <div class="profile-section" (click)="showProfileMenu = !showProfileMenu">
-        <img [src]="user?.avatar || 'assets/default-avatar.png'" class="avatar">
-        <div class="user-info" *ngIf="!isSidebarCollapsed">
-          <div class="name">{{ user?.name || 'User' }}</div>
-          <div class="role">{{ user?.role || 'Admin' }}</div>
-        </div>
+  <div class="content-layout">
+
+    <header class="app-header">
+      <div class="header-left">
+        <button class="toggle-btn" (click)="toggleSidebar()">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <line x1="3" y1="12" x2="21" y2="12"></line>
+            <line x1="3" y1="6" x2="21" y2="6"></line>
+            <line x1="3" y1="18" x2="21" y2="18"></line>
+          </svg>
+        </button>
       </div>
 
-      <div class="settings-popup" *ngIf="showProfileMenu">
-        <div class="popup-header">Settings</div>
-        <p>Theme Color:</p>
-        <div class="color-palette">
-          <div *ngFor="let c of themeColors" [style.background]="c" (click)="changeBackground(c)" class="color-dot"></div>
-        </div>
-        <hr>
-        <button (click)="logout()" class="btn-logout">Sign Out</button>
+      <div class="header-actions">
+        <button class="lang-btn" (click)="toggleLanguage()" title="Change Language">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="2" y1="12" x2="22" y2="12"></line>
+            <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+          </svg>
+          <span class="lang-text">{{ currentLang || 'EN' }}</span>
+        </button>
       </div>
-    </aside>
+    </header>
 
-    <main class="content-wrapper">
+    <main class="main-content">
       <router-outlet></router-outlet>
     </main>
 
   </div>
+
 </div>

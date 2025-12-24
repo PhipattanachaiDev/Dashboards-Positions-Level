@@ -6,14 +6,15 @@ import { FormsModule } from '@angular/forms';
 import { routes } from './app.routes';
 import { AuthInterceptor } from './interceptors/auth.interceptor';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
+import { provideAnimations } from '@angular/platform-browser/animations';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideRouter(routes),
     provideHttpClient(withInterceptorsFromDi()),
     importProvidersFrom(FormsModule),
+    provideAnimations(),
 
-    // Interceptor แบบ Manual Provider
     {
       provide: HTTP_INTERCEPTORS,
       useClass: AuthInterceptor,
